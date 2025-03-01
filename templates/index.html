@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParruVitsiBotti</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input, button { font-size: 16px; padding: 10px; margin: 10px; }
+        #joke { font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>ParruVitsiBotti</h1>
+    <p>Syötä sana, niin saat vitsin, jossa esiintyy sana "parru"!</p>
+    <input type="text" id="wordInput" placeholder="Kirjoita sana">
+    <button onclick="getJoke()">Keksi vitsi</button>
+    <p id="joke"></p>
+
+    <script>
+        function getJoke() {
+            let word = document.getElementById("wordInput").value;
+            if (!word) {
+                alert("Syötä sana ensin!");
+                return;
+            }
+
+            fetch("/generate_joke", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ word: word })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.joke) {
+                    document.getElementById("joke").innerText = data.joke;
+                } else {
+                    document.getElementById("joke").innerText = "Virhe: " + data.error;
+                }
+            })
+            .catch(error => console.error("Virhe:", error));
+        }
+    </script>
+</body>
+</html>
