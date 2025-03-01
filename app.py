@@ -7,6 +7,9 @@ app = Flask(__name__)
 # 🔹 Haetaan OpenAI API-avain ympäristömuuttujasta
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+# 🔹 Luodaan OpenAI client-olio, joka tarvitaan uusimmassa OpenAI API:ssa
+client = openai.OpenAI()
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -23,16 +26,16 @@ def generate_joke():
     prompt = f"Keksi hauska ja lyhyt vitsi, jossa esiintyy sana '{word}' ja myös sana 'parru'."
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "Olet hauska vitsikone."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.7,  # Hallitsee luovuuden tasoa (0 = täysin tarkka, 1 = täysin luova)
+            temperature=0.7,  # Säätelee luovuuden tasoa (0 = tarkka, 1 = hyvin luova)
             max_tokens=50  # Rajoittaa vastauksen pituutta
         )
-        joke = response["choices"][0]["message"]["content"].strip()
+        joke = response.choices[0].message.content.strip()
         return jsonify({"joke": joke})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
