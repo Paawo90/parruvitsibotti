@@ -5,21 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ParruVitsiBotti</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        input, button { font-size: 16px; padding: 10px; margin: 10px; }
-        #joke { font-weight: bold; margin-top: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #joke {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
-    <h1>ParruVitsiBotti</h1>
-    <p>Syötä sana, niin saat vitsin, jossa esiintyy sana "parru"!</p>
-    <input type="text" id="wordInput" placeholder="Kirjoita sana">
-    <button onclick="getJoke()">Keksi vitsi</button>
-    <p id="joke"></p>
+
+    <div class="container">
+        <h1>ParruVitsiBotti 🤖</h1>
+        <p>Syötä sana, niin saat vitsin, jossa esiintyy sana "parru"! 😂</p>
+        
+        <input type="text" id="word" placeholder="Kirjoita sana...">
+        <button onclick="generateJoke()">Keksi vitsi</button>
+        
+        <p id="joke"></p>
+    </div>
 
     <script>
-        function getJoke() {
-            let word = document.getElementById("wordInput").value;
+        function generateJoke() {
+            let word = document.getElementById("word").value;
             if (!word) {
                 alert("Syötä sana ensin!");
                 return;
@@ -32,14 +77,13 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.joke) {
-                    document.getElementById("joke").innerText = data.joke;
-                } else {
-                    document.getElementById("joke").innerText = "Virhe: " + data.error;
-                }
+                document.getElementById("joke").textContent = data.joke || "Virhe vitsin generoinnissa.";
             })
-            .catch(error => console.error("Virhe:", error));
+            .catch(error => {
+                document.getElementById("joke").textContent = "Virhe palvelimella.";
+            });
         }
     </script>
+
 </body>
 </html>
